@@ -13,12 +13,12 @@ const {
 
 
 router
-  .route('/teachers')
+  .route('/users')
   .post(register)
   .get(readAll)
 
 router
-  .route('/teachers/:_id')
+  .route('/users/:_id')
   .get(fetchOne)
   .delete(deleteOne)
   .patch(updateuser)
