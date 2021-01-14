@@ -8,7 +8,7 @@ export class BaseController {
   }
 
   error(res, error) {
-    res.status(error.code || 400).json({
+    res.status(400).send({
       status: 'error',
       message: error.message
     });
