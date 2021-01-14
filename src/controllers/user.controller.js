@@ -6,9 +6,9 @@ import User from '../model/user.model';
 import { throwError } from '../utils/handleErrors';
 dotConfig();
 
-const api_key = process.env.API_KEY;
-const domain = process.env.DOMAIN;
-const from_who = process.env.FROM_WHO;
+const api_key = process.env.API_KEY_MAILGUN;
+const domain = process.env.DOMAIN_MAILGUN;
+const from_who = process.env.FROM_WHO_MAILGUN;
 export class UserController extends BaseController {
   constructor() {
     super();
@@ -20,20 +20,19 @@ export class UserController extends BaseController {
       
       const newUser = new User(data);
       const user = await newUser.save();
-      const mailgun = new Mailgun({apiKey: api_key, domain: domain});
-    const data1 = {
-    //Specify email data
-      from: from_who,
-    //The email to contact
-      to: req.body.email,
-    //Subject and text data  
-      subject: 'Hello from Mailgun',
-      html: `<h1>Welcom to Simple server ${req.body.firstname} </h1> <p>We are happy to see you register with us</p>`
-    }
-    //Invokes the method to send emails given the above data with the helper library
-    mailgun.messages().send(data1)
+       const mailgun = new Mailgun({apiKey: api_key, domain: domain});
+       const data1 = {
+       //Specify email data
+       from: from_who,
+       //The email to contact
+       to: req.body.email,
+       //Subject and text data  
+       subject: 'Hello from Mailgun',
+       html: `<h1>Welcom to Simple server ${req.body.firstname} </h1> <p>We are happy to see you register with us</p>`
+       }
+     //Invokes the method to send emails given the above data with the helper library
+      mailgun.messages().send(data1)
       const body = { user };
-
       super.success(res, body, 'User Registration Successful', 201);
     } catch (e) {
       super.error(res, e);
@@ -58,10 +57,10 @@ async fetchOne(req, res, next) {
   try {
     const user = await User.findById(req.params._id);
     if (!user) {
-      return res.status(400).send({ error: 'User does not exist' });
+      super.error(res);
     } 
     if(user)
-    return res.status(200).send(user);
+    super.success(res, user);
   } catch (e) {
     super.error(res, e);
   }
